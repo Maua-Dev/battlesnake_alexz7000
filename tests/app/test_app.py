@@ -4,11 +4,17 @@ from src.app.main import create_item, read_item, read_root
 class Test_App:
     def test_read_root(self):
         resp = read_root()
-        
-        assert resp == {"Hello": "World"}
+
+        assert resp == {
+            "apiversion": "1",
+            "author": "Alessandro",
+            "color": "#888888",
+            "head": "default",
+            "tail": "default",
+            "version": "0.0.1-beta"
+        }
 
     def test_get_item(self):
-        
         resp = read_item(1)
 
         assert resp == {"item_id": 1}
