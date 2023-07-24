@@ -11,7 +11,7 @@ def read_root():
     return{
       "apiversion": "1",
       "author": "alexZ7000",
-      "color": "#888888",
+      "color": "#0000FF",
       "head": "scarf",
       "tail": "coffee",
       "version": "0.0.1-beta"
@@ -20,12 +20,14 @@ def read_root():
 
 @app.post("/move")
 def move(request: dict):
+    print("A cobra vai andar...")
+    print(request)
     game = request["game"]
     board = request["board"]
     you = request["you"]
 
     # direction = agent.get_next_move(game, board, you)
-    direction = "up"
+    direction = "left"
     return {"move": direction}
 
 
