@@ -1,4 +1,4 @@
-from src.app.main import create_item, read_item, read_root
+from src.app.main import read_root
 
 
 class Test_App:
@@ -7,23 +7,9 @@ class Test_App:
 
         assert resp == {
             "apiversion": "1",
-            "author": "Alessandro",
+            "author": "alexZ7000",
             "color": "#888888",
-            "head": "default",
-            "tail": "default",
+            "head": "scarf",
+            "tail": "coffee",
             "version": "0.0.1-beta"
         }
-
-    def test_get_item(self):
-        resp = read_item(1)
-
-        assert resp == {"item_id": 1}
-
-    def test_post_item(self):
-        request = {"item_id": 1,
-                   "name": "test"}
-
-        resp = create_item(request)
-
-        assert resp == {"item_id": 1,
-                        "name": "test"}
