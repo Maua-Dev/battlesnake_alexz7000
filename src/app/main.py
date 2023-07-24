@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from mangum import Mangum
 #from agent import Agent
 
@@ -18,11 +18,10 @@ def read_root():
     }
 
 @app.post("/move")
-def move(request: Request):
-    data = request.json()
-    game = data["game"]
-    board = data["board"]
-    you = data["you"]
+def move(request: dict):
+    game = request["game"]
+    board = request["board"]
+    you = request["you"]
 
     #direction = agent.get_next_move(game, board, you)
     direction = "up"
