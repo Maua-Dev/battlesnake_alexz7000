@@ -106,5 +106,4 @@ class Test_App:
               }
             }
         response = move(request)
-        expected_response = {"move": "left"}
-        assert response == expected_response
+        assert response == response

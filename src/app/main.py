@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from mangum import Mangum
+import random
 # from agent import Agent
 
 app = FastAPI()
@@ -27,7 +28,9 @@ def move(request: dict):
     you = request["you"]
 
     # direction = agent.get_next_move(game, board, you)
-    direction = "left"
+    directions = ["up", "down", "left", "right"]
+    direction = random.choice(directions)
+    print(f"A cobra vai andar para {direction}")
     return {"move": direction}
 
 
