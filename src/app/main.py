@@ -1,48 +1,31 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from mangum import Mangum
+#from agent import Agent
 
 app = FastAPI()
-
-# TODO: Implement my logic here to handle the requests from Battlesnake
+#agent = Agent()
 
 
 @app.get("/")
 def read_root():
-    return {
-        "apiversion": "1",
-        "author": "Alessandro",
-        "color": "#888888",
-        "head": "default",
-        "tail": "default",
-        "version": "0.0.1-beta"
+    return{
+      "apiversion": "1",
+      "author": "alexZ7000",
+      "color": "#888888",
+      "head": "default",
+      "tail": "default",
+      "version": "0.0.1-beta"
     }
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int):
-    return {"item_id": item_id}
-
-
-@app.post("/create_item")
-def create_item(request: dict):
-    item_id = request.get("item_id")
-    name = request.get("name")
-
-    return {"item_id": item_id,
-            "name": name}
-
 
 @app.post("/move")
-def move():
-    return{
-        "move": "up",
-        "shout": "Moving Up!"
-    }
+def move(request: Request):
+    data = request.json()
+    game = data["game"]
+    board = data["board"]
+    you = data["you"]
 
+    #direction = agent.get_next_move(game, board, you)
+    direction = "up"
+    return {"move": direction}
 
 handler = Mangum(app, lifespan="off")
-
-# Aqui são minhas rotas, aonde eu devo implementar minha lógica
-# Todas as funções que você precisar criar deverá ser neste local
-# Criar uma lista, e usar random para criar cobras aleatórias automaticamente
-#
