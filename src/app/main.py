@@ -136,6 +136,7 @@ def move(request: dict):
     possible_moves = avoid_my_body(body, possible_moves)
     possible_moves = avoid_walls(board_width, board_height, possible_moves)
     possible_moves = avoid_snakes(possible_moves, snakes)
+
     target = get_close_target(board["food"], head)
 
     if len(possible_moves) > 0:

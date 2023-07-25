@@ -1,8 +1,2 @@
 mangum==0.17.0
 fastapi~=0.100.0
-constructs~=10.2.69
-scipy~=1.11.1
-torch~=2.0.1
-numpy~=1.24.3
-array2gif~=1.0.4
-matplotlib~=3.7.2
