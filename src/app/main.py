@@ -64,7 +64,9 @@ def move(request: dict):
 
     possible_moves = avoid_my_body(body, possible_moves)
     move_snake = random.choice(list(possible_moves.keys()))
-    return move_snake
+    return {
+        "move": move_snake,
+    }
 
 
 handler = Mangum(app, lifespan="off")
