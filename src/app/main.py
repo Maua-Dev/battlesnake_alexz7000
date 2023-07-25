@@ -1,10 +1,21 @@
 from fastapi import FastAPI
 from mangum import Mangum
 import random
-# from agent import Agent
 
 app = FastAPI()
-# agent = Agent()
+
+
+def avoid_my_body(body, possible_moves):
+    remove = []
+
+    for direction, location  in possible_moves.items():
+        if location in body:
+            remove.append(direction)
+
+    for direction in remove:
+        del possible_moves[direction]
+
+    return possible_moves
 
 
 @app.get("/")
@@ -27,14 +38,35 @@ def move(request: dict):
     board = request["board"]
     you = request["you"]
 
-    # direction = agent.get_next_move(game, board, you)
-    directions = ["up", "down", "left", "right"]
-    direction = random.choice(directions)
-    print(f"A cobra vai andar para {direction}")
-    return {"move": direction}
+    head = you["head"]
+    body = you["body"]
+    board_height = board["height"]
+    board_width = board["width"]
+
+    possible_moves = {
+        "up": {
+            "x": head["x"],
+            "y": head["y"] + 1
+        },
+        "down": {
+            "x": head["x"],
+            "y": head["y"] - 1
+        },
+        "left": {
+            "x": head["x"] - 1,
+            "y": head["y"]
+        },
+        "right": {
+            "x": head["x"] + 1,
+            "y": head["y"]
+        }
+    }
+
+    possible_moves = avoid_my_body(body, possible_moves)
+    move_snake = random.choice(list(possible_moves.keys()))
+    return move_snake
 
 
 handler = Mangum(app, lifespan="off")
 
 # tdd test driven development
-

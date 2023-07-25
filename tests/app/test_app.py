@@ -105,5 +105,6 @@ class Test_App:
                 }
               }
             }
+
         response = move(request)
         assert response == response
