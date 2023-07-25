@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from mangum import Mangum
 import random
+from scipy import spatial
 
 app = FastAPI()
 
@@ -48,36 +49,48 @@ def avoid_snakes(possible_moves, snakes):
     return possible_moves
 
 
-def get_target_food(foods, head):
+def get_target_close(foods, head):
+    coordinates = []
+
     if len(foods) == 0:
         return None
 
-    return get_close_target(foods, head)
+    for food in foods:
+        coordinates.append((food["x"], food["y"]))
+
+    tree = spatial.KDTree(coordinates)
+    closest_food = tree.query([(head["x"], head["y"])])[1]
+    return foods[closest_food[0]]  # return foods[closest_food]
+
+'''
+    if len(foods) > 0:
+        closest_food = foods[0]
+        closest_distance = spatial.distance.euclidean((head["x"], head["y"]), (closest_food["x"], closest_food["y"]))
+
+        for food in foods:
+            distance = spatial.distance.euclidean((head["x"], head["y"]), (food["x"], food["y"]))
+            if distance < closest_distance:
+                closest_distance = distance
+                closest_food = food
+
+        return closest_food
+    else:
+        return None
+'''
+
 
 def move_target(possible_moves, head, target):
-    if target["x"] > head["x"]:
-        return "right"
-    elif target["x"] < head["x"]:
-        return "left"
-    elif target["y"] > head["y"]:
-        return "up"
-    elif target["y"] < head["y"]:
-        return "down"
-    else:
-        return random.choice(list(possible_moves.keys()))
+    distance_x = abs(head["x"] - target["x"])
+    distance_y = abs(head["y"] - target["y"])
 
-def get_close_target(foods, head):
-    target = foods[0]
-    min_distance = abs(head["x"] - target["x"]) + abs(head["y"] - target["y"])
+    for direction, location in possible_moves.items():
+        new_distance_x = abs(location["x"] - target["x"])
+        new_distance_y = abs(location["y"] - target["y"])
 
-    for food in foods:
-        distance = abs(head["x"] - food["x"]) + abs(head["y"] - food["y"])
-        if distance < min_distance:
-            min_distance = distance
-            target = food
+        if new_distance_y < distance_y or new_distance_x < distance_x:
+            return direction
 
-    return target
-
+    return list(possible_moves.keys())[0]
 
 @app.get("/")
 def read_root():
@@ -129,7 +142,7 @@ def move(request: dict):
     possible_moves = avoid_snakes(possible_moves, snakes)
 
     # target = board["food"][0]
-    target = get_target_food(board["food"], head)
+    target = get_target_close(board["food"], head)
 
     if len(possible_moves) > 0:
         if target is not None:
