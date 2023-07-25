@@ -1,6 +1,10 @@
 from src.app.main import read_root, move
 from scipy import spatial
 
+cu = [(0, 0), (1, 0), (2, 0)]
+tree = spatial.KDTree(cu)
+
+
 class Test_App:
     def test_read_root(self):
         resp = read_root()
