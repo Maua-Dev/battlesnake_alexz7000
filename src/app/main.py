@@ -75,19 +75,6 @@ def move_target(possible_moves, head, target):
         return random.choice(list(possible_moves.keys()))
 
 
-def move_to_tail(possible_moves, head, tail):
-    if tail["x"] > head["x"]:
-        return "right"
-    elif tail["x"] < head["x"]:
-        return "left"
-    elif tail["y"] > head["y"]:
-        return "up"
-    elif tail["y"] < head["y"]:
-        return "down"
-    else:
-        return random.choice(list(possible_moves.keys()))
-
-
 @app.get("/")
 def read_root():
     return{
@@ -142,8 +129,7 @@ def move(request: dict):
         if target is not None:
             move_snake = move_target(possible_moves, head, target)
         else:
-            tail = body[-1]
-            move_snake = move_to_tail(possible_moves, head, tail)
+            move_snake = random.choice(list(possible_moves.keys()))
     else:
         move_snake = random.choice(list(possible_moves.keys()))
 
