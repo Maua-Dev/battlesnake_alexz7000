@@ -17,6 +17,21 @@ def avoid_my_body(body, possible_moves):
 
     return possible_moves
 
+def avoid_walls(board_width, board_height, possible_moves):
+    remove = []
+
+    for direction, location in possible_moves.items():
+        x_out_range = (location["x"] < 0) or (location["x"] == board_width)
+        y_out_range = (location["y"] < 0) or (location["y"] == board_height)
+
+        if x_out_range or y_out_range:
+            remove.append(direction)
+
+    for direction in remove:
+        del possible_moves[direction]
+
+    return possible_moves
+
 
 @app.get("/")
 def read_root():
@@ -63,9 +78,10 @@ def move(request: dict):
     }
 
     possible_moves = avoid_my_body(body, possible_moves)
+    possible_moves = avoid_walls(board_width, board_height, possible_moves)
     move_snake = random.choice(list(possible_moves.keys()))
     return {
-        "move": move_snake,
+        "move": move_snake
     }
 
 
