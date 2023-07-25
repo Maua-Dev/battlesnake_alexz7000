@@ -92,6 +92,7 @@ def move_target(possible_moves, head, target):
 
     return list(possible_moves.keys())[0]
 
+
 @app.get("/")
 def read_root():
     return{
@@ -106,8 +107,6 @@ def read_root():
 
 @app.post("/move")
 def move(request: dict):
-    print("A cobra vai andar...")
-    print(request)
     game = request["game"]
     board = request["board"]
     you = request["you"]
@@ -140,8 +139,6 @@ def move(request: dict):
     possible_moves = avoid_my_body(body, possible_moves)
     possible_moves = avoid_walls(board_width, board_height, possible_moves)
     possible_moves = avoid_snakes(possible_moves, snakes)
-
-    # target = board["food"][0]
     target = get_target_close(board["food"], head)
 
     if len(possible_moves) > 0:
