@@ -48,6 +48,37 @@ def avoid_snakes(possible_moves, snakes):
     return possible_moves
 
 
+def get_target_food(foods, head):
+    if len(foods) == 0:
+        return None
+
+    return get_close_target(foods, head)
+
+def move_target(possible_moves, head, target):
+    if target["x"] > head["x"]:
+        return "right"
+    elif target["x"] < head["x"]:
+        return "left"
+    elif target["y"] > head["y"]:
+        return "up"
+    elif target["y"] < head["y"]:
+        return "down"
+    else:
+        return random.choice(list(possible_moves.keys()))
+
+def get_close_target(foods, head):
+    target = foods[0]
+    min_distance = abs(head["x"] - target["x"]) + abs(head["y"] - target["y"])
+
+    for food in foods:
+        distance = abs(head["x"] - food["x"]) + abs(head["y"] - food["y"])
+        if distance < min_distance:
+            min_distance = distance
+            target = food
+
+    return target
+
+
 @app.get("/")
 def read_root():
     return{
@@ -96,7 +127,18 @@ def move(request: dict):
     possible_moves = avoid_my_body(body, possible_moves)
     possible_moves = avoid_walls(board_width, board_height, possible_moves)
     possible_moves = avoid_snakes(possible_moves, snakes)
-    move_snake = random.choice(list(possible_moves.keys()))
+
+    # target = board["food"][0]
+    target = get_target_food(board["food"], head)
+
+    if len(possible_moves) > 0:
+        if target is not None:
+            move_snake = move_target(possible_moves, head, target
+        else:
+            move_snake = random.choice(list(possible_moves.keys()))
+    else:
+        move_snake = "right"
+        print("Mechendo pra direita pq n existe outros movimentos possiveis")
     return {
         "move": move_snake
     }
