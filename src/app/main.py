@@ -63,16 +63,17 @@ def get_close_target(food, head):
 
 
 def move_target(possible_moves, head, target):
-    if target["x"] > head["x"]:
-        return "right"
-    elif target["x"] < head["x"]:
-        return "left"
-    elif target["y"] > head["y"]:
-        return "up"
-    elif target["y"] < head["y"]:
-        return "down"
-    else:
-        return random.choice(list(possible_moves.keys()))
+    move = None
+    min_distance = 1000
+
+    for direction, location in possible_moves.items():
+        distance = abs(target["x"] - location["x"]) + abs(target["y"] - location["y"])
+
+        if distance < min_distance:
+            min_distance = distance
+            move = direction
+
+    return move
 
 
 @app.get("/")
