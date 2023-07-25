@@ -133,7 +133,7 @@ def move(request: dict):
 
     if len(possible_moves) > 0:
         if target is not None:
-            move_snake = move_target(possible_moves, head, target
+            move_snake = move_target(possible_moves, head, target)
         else:
             move_snake = random.choice(list(possible_moves.keys()))
     else:
