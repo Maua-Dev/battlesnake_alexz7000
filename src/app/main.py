@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from mangum import Mangum
 import random
+from scipy import spatial
 
 app = FastAPI()
 
@@ -48,32 +49,32 @@ def avoid_snakes(possible_moves, snakes):
     return possible_moves
 
 
-def get_close_target(food, head):
-    target = None
-    min_distance = 1
+def get_close_target(foods, head):
+    coordinates = []
 
-    for food_location in food:
-        distance = abs(head["x"] - food_location["x"]) + abs(head["y"] - food_location["y"])
+    if len(foods) == 0:
+        return None
 
-        if distance < min_distance:
-            min_distance = distance
-            target = food_location
+    for food in foods:
+        coordinates.append((food["x"], food["y"]))
 
-    return target
+    tree = spatial.KDTree(coordinates)
+    results = tree.query([head["x"], head["y"]])[1]
+
+    return foods[results]
 
 
 def move_target(possible_moves, head, target):
-    move = None
-    min_distance = 1000
+    distance_x = abs(head["x"] - target["x"])
+    distance_y = abs(head["y"] - target["y"])
 
     for direction, location in possible_moves.items():
-        distance = abs(target["x"] - location["x"]) + abs(target["y"] - location["y"])
+        new_distance_x = abs(location["x"] - target["x"])
+        new_distance_y = abs(location["y"] - target["y"])
+        if new_distance_x < distance_x or new_distance_y < distance_y:
+            return direction
 
-        if distance < min_distance:
-            min_distance = distance
-            move = direction
-
-    return move
+    return random.choice(list(possible_moves.keys()))
 
 
 @app.get("/")
@@ -126,11 +127,8 @@ def move(request: dict):
     possible_moves = avoid_snakes(possible_moves, snakes)
     target = get_close_target(board["food"], head)
 
-    if len(possible_moves) > 0:
-        if target is not None:
-            move_snake = move_target(possible_moves, head, target)
-        else:
-            move_snake = random.choice(list(possible_moves.keys()))
+    if target:
+        move_snake = move_target(possible_moves, head, target)
     else:
         move_snake = random.choice(list(possible_moves.keys()))
 

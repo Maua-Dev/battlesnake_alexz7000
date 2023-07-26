@@ -1,5 +1,5 @@
 from src.app.main import read_root, move
-
+from scipy import spatial
 
 class Test_App:
     def test_read_root(self):
